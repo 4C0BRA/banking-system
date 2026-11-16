@@ -1,5 +1,4 @@
 #!/bin/sh
-export PATH="$PATH:/c/Users/atorc/.jdks/openjdk-27/bin/javac"
 set -eu
 cd "$(dirname "$0")"
 mkdir -p out
