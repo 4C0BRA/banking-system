@@ -73,9 +73,7 @@ The interface is in `ui`, and the console demonstration is in `BankingDemo`.
 
 ## Documentation
 
-- [Complete project report](docs/REPORT.md)
-- [Download the PDF report](docs/Banking_System_Report_SE2530.pdf)
-- [Download the editable Word report](docs/Banking_System_Report_SE2530.docx)
+- [Project overview](docs/REPORT.md)
 - [UML class diagram](docs/classes.puml)
 - [UML sequence diagrams](docs/sequences.puml)
 
