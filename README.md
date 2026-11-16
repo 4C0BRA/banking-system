@@ -1,45 +1,51 @@
 # Banking System
 
-A two-student course project built with Java 17 and Swing, without external libraries.
+A Java 17 desktop banking simulator built with Swing and no external libraries.
 
 ## Running the application
 
 From the repository root:
 
 ```sh
-sh banking-system/run.sh
+sh run.sh
 ```
 
 Run the console demonstration or automated checks:
 
 ```sh
-sh banking-system/run.sh demo
-sh banking-system/run.sh test
+sh run.sh demo
+sh run.sh test
 ```
 
-In IntelliJ IDEA, select JDK 17 or later, mark `banking-system/src/main/java` as Sources Root and `banking-system/src/test/java` as Test Sources Root, then run `kz.aitu.bank.ui.BankingApp`.
+In IntelliJ IDEA, select JDK 17 or later, mark `src/main/java` as Sources Root and `src/test/java` as Test Sources Root, then run `kz.aitu.bank.ui.BankingApp`.
 
-On Windows, use IntelliJ IDEA or run these commands from the `banking-system` directory:
+On Windows, use IntelliJ IDEA or run these commands from the repository root in PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Force out | Out-Null
-Get-ChildItem src/main/java -Recurse -Filter *.java | ForEach-Object { '"' + $_.FullName + '"' } | Set-Content out/sources.txt
-javac --release 17 -encoding UTF-8 -d out '@out/sources.txt'
+$sources = Get-ChildItem src/main/java -Recurse -Filter *.java | ForEach-Object FullName
+javac --release 17 -encoding UTF-8 -d out $sources
+$tests = Get-ChildItem src/test/java -Recurse -Filter *.java | ForEach-Object FullName
+javac --release 17 -encoding UTF-8 -cp out -d out $tests
+java -ea -cp out kz.aitu.bank.CorePatternsTest
+java -ea -cp out kz.aitu.bank.BankingIntegrationTest
+java -ea '-Djava.awt.headless=true' -cp out kz.aitu.bank.BankingUiTest
+java -cp out kz.aitu.bank.BankingDemo
 java -cp out kz.aitu.bank.ui.BankingApp
 ```
 
-## Patterns and responsibilities
+## Design patterns
 
-| Team member | Pattern | Package |
+| Pattern | Package | Responsibility |
 |---|---|---|
-| Ansar | Factory Method | `factory`, with products in `model` |
-| Ansar | Strategy | `strategy` |
-| Ansar | Builder | `builder` |
-| Second student | Decorator | `decorator` |
-| Second student | Observer | `observer` |
-| Second student | Facade | `facade` |
+| Factory Method | `factory`, `model` | Creates savings and current accounts |
+| Strategy | `strategy` | Calculates savings and loan interest |
+| Builder | `builder` | Creates validated loan agreements |
+| Decorator | `decorator` | Adds simulated notification channels |
+| Observer | `observer` | Records transactions and flags large withdrawals |
+| Facade | `facade` | Coordinates banking operations for the UI |
 
-The interface is in `ui`, and the console demonstration is in `BankingDemo`. See [team commit instructions](docs/TEAM_COMMITS.md) for the second student's commits.
+The interface is in `ui`, and the console demonstration is in `BankingDemo`.
 
 ## Demonstration walkthrough
 
@@ -67,9 +73,8 @@ The interface is in `ui`, and the console demonstration is in `BankingDemo`. See
 
 ## Documentation
 
-- [Project report draft](docs/REPORT.md)
+- [Project overview](docs/REPORT.md)
 - [UML class diagram](docs/classes.puml)
 - [UML sequence diagrams](docs/sequences.puml)
-- [Team commit instructions](docs/TEAM_COMMITS.md)
 
-Capture report screenshots from the running application using the walkthrough above. Run `sh banking-system/run.sh test` to obtain the automated check results.
+Run `sh run.sh test` to execute all automated checks.
