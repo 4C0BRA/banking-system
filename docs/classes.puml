@@ -1,0 +1,127 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+package "Factory Method" {
+abstract class AccountCreator {
+  +openAccount(id, owner): Account
+  #createAccount(id, owner): Account
+}
+class SavingsAccountCreator
+class CurrentAccountCreator
+abstract class Account {
+  -id: String
+  -owner: String
+  -balance: BigDecimal
+  +deposit(amount)
+  +withdraw(amount)
+}
+class SavingsAccount
+class CurrentAccount
+AccountCreator <|-- SavingsAccountCreator
+AccountCreator <|-- CurrentAccountCreator
+Account <|-- SavingsAccount
+Account <|-- CurrentAccount
+SavingsAccountCreator ..> SavingsAccount : creates
+CurrentAccountCreator ..> CurrentAccount : creates
+}
+package Strategy {
+interface InterestStrategy {
+  +calculate(principal, annualRate, months): BigDecimal
+}
+class SavingsInterestStrategy
+class LoanInterestStrategy
+class InterestCalculator {
+  -strategy: InterestStrategy
+  +setStrategy(strategy)
+  +calculate(principal, annualRate, months): BigDecimal
+}
+InterestStrategy <|.. SavingsInterestStrategy
+InterestStrategy <|.. LoanInterestStrategy
+InterestCalculator o-- InterestStrategy
+}
+package Builder {
+class LoanAgreementBuilder {
+  +borrower(name): LoanAgreementBuilder
+  +amount(amount): LoanAgreementBuilder
+  +annualRate(rate): LoanAgreementBuilder
+  +months(months): LoanAgreementBuilder
+  +purpose(purpose): LoanAgreementBuilder
+  +guarantor(guarantor): LoanAgreementBuilder
+  +build(): LoanAgreement
+}
+class LoanAgreementDirector {
+  +createPersonalLoan(borrower, amount, rate, months): LoanAgreement
+}
+class LoanAgreement {
+  -borrower: String
+  -amount: BigDecimal
+  -annualRate: BigDecimal
+  -months: int
+  -interest: BigDecimal
+  -purpose: String
+  -guarantor: String
+  +getTotal(): BigDecimal
+}
+LoanAgreementDirector ..> LoanAgreementBuilder
+LoanAgreementBuilder ..> LoanAgreement : creates
+LoanAgreementBuilder ..> InterestCalculator
+}
+package Decorator {
+interface Notifier {
+  +send(message)
+}
+class AppNotifier
+abstract class NotifierDecorator {
+  -wrapped: Notifier
+  +send(message)
+}
+class EmailNotifier
+class SmsNotifier
+Notifier <|.. AppNotifier
+Notifier <|.. NotifierDecorator
+NotifierDecorator o-- Notifier : wraps
+NotifierDecorator <|-- EmailNotifier
+NotifierDecorator <|-- SmsNotifier
+}
+package Observer {
+interface TransactionObserver {
+  +update(transaction)
+}
+class TransactionPublisher {
+  +register(observer)
+  +remove(observer)
+  +publish(transaction)
+}
+class TransactionHistory
+class FraudMonitor
+class Transaction <<record>>
+TransactionObserver <|.. TransactionHistory
+TransactionObserver <|.. FraudMonitor
+TransactionPublisher o-- "0..*" TransactionObserver
+TransactionPublisher ..> Transaction
+FraudMonitor --> Notifier : sends alert
+}
+package Facade {
+class BankingFacade {
+  +openAccount(type, owner): Account
+  +deposit(id, amount)
+  +withdraw(id, amount)
+  +calculateInterest(type, amount, rate, months): BigDecimal
+  +createLoan(id, amount, rate, months, purpose, guarantor): LoanAgreement
+  +setNotificationChannels(email, sms)
+  +setHistoryEnabled(enabled)
+}
+}
+class BankingApp
+BankingApp --> BankingFacade
+BankingFacade ..> AccountCreator
+BankingFacade --> InterestCalculator
+BankingFacade ..> LoanAgreementBuilder
+BankingFacade o-- Account
+BankingFacade ..> AppNotifier
+BankingFacade ..> EmailNotifier
+BankingFacade ..> SmsNotifier
+BankingFacade --> TransactionPublisher
+BankingFacade --> TransactionHistory
+BankingFacade --> FraudMonitor
+@enduml

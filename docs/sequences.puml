@@ -1,0 +1,66 @@
+@startuml transaction
+actor Student
+participant BankingApp
+participant BankingFacade
+participant Account
+participant TransactionPublisher
+participant TransactionHistory
+participant FraudMonitor
+participant SmsNotifier
+participant EmailNotifier
+participant AppNotifier
+Student -> BankingApp: enable Email and SMS channels
+BankingApp -> BankingFacade: setNotificationChannels(true, true)
+BankingFacade -> BankingFacade: build Sms(Email(App)) notifier chain
+BankingFacade -> FraudMonitor: setNotifier(chain)
+Student -> BankingApp: withdraw 6000 from balance 12000
+BankingApp -> BankingFacade: withdraw(id, 6000)
+BankingFacade -> Account: withdraw(6000)
+Account --> BankingFacade: balance = 6000
+BankingFacade -> TransactionPublisher: publish(successful transaction)
+TransactionPublisher -> TransactionHistory: update(transaction)
+TransactionPublisher -> FraudMonitor: update(transaction)
+FraudMonitor -> FraudMonitor: store suspicious withdrawal alert
+FraudMonitor -> SmsNotifier: send(alert)
+SmsNotifier -> EmailNotifier: send(alert)
+EmailNotifier -> AppNotifier: send(alert)
+AppNotifier -> AppNotifier: record APP delivery
+AppNotifier --> EmailNotifier: return
+EmailNotifier -> EmailNotifier: record simulated EMAIL delivery
+EmailNotifier --> SmsNotifier: return
+SmsNotifier -> SmsNotifier: record simulated SMS delivery
+BankingFacade --> BankingApp: complete
+Student -> BankingApp: withdraw 100
+BankingApp -> BankingFacade: withdraw(id, 100)
+BankingFacade -> Account: withdraw(100)
+Account --> BankingFacade: balance = 5900
+BankingFacade -> TransactionPublisher: publish(successful transaction)
+TransactionPublisher -> TransactionHistory: update(transaction)
+TransactionPublisher -> FraudMonitor: update(transaction)
+note over FraudMonitor: No fraud alert for withdrawal <= 5000
+@enduml
+
+@startuml loan
+actor Student
+participant BankingApp
+participant BankingFacade
+participant LoanAgreementBuilder
+participant InterestCalculator
+participant LoanInterestStrategy
+participant LoanAgreement
+Student -> BankingApp: enter loan terms
+BankingApp -> BankingFacade: createLoan(accountId, amount, rate, months, purpose, guarantor)
+BankingFacade -> BankingFacade: find account
+BankingFacade -> LoanAgreementBuilder: set borrower and terms
+BankingFacade -> LoanAgreementBuilder: build()
+LoanAgreementBuilder -> LoanAgreementBuilder: validate required fields
+LoanAgreementBuilder -> InterestCalculator: calculate(amount, rate, months)
+InterestCalculator -> LoanInterestStrategy: calculate(amount, rate, months)
+LoanInterestStrategy --> InterestCalculator: interest
+InterestCalculator --> LoanAgreementBuilder: rounded interest
+LoanAgreementBuilder -> LoanAgreement: construct immutable agreement
+LoanAgreementBuilder --> BankingFacade: agreement
+BankingFacade -> BankingFacade: store agreement
+BankingFacade --> BankingApp: agreement
+BankingApp --> Student: display document
+@enduml
