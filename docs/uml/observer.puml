@@ -1,0 +1,30 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam dpi 180
+left to right direction
+
+interface TransactionObserver {
+  +update(transaction)
+}
+class TransactionPublisher {
+  +register(observer)
+  +remove(observer)
+  +publish(transaction)
+}
+interface Notifier
+class TransactionHistory
+class FraudMonitor
+class Transaction <<record>>
+TransactionObserver <|.. TransactionHistory
+TransactionObserver <|.. FraudMonitor
+TransactionPublisher o-- "0..*" TransactionObserver
+TransactionPublisher ..> Transaction
+FraudMonitor --> Notifier : sends alert
+
+@enduml

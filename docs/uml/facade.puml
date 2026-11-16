@@ -1,0 +1,37 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam dpi 180
+left to right direction
+
+class BankingFacade {
+  +openAccount(type, owner): Account
+  +deposit(id, amount)
+  +withdraw(id, amount)
+  +calculateInterest(...): BigDecimal
+  +createLoan(...): LoanAgreement
+  +setNotificationChannels(email, sms)
+  +setHistoryEnabled(enabled)
+}
+
+class BankingApp
+abstract class AccountCreator
+class InterestCalculator
+class LoanAgreementBuilder
+class TransactionPublisher
+class FraudMonitor
+interface Notifier
+BankingApp --> BankingFacade
+BankingFacade ..> AccountCreator
+BankingFacade --> InterestCalculator
+BankingFacade ..> LoanAgreementBuilder
+BankingFacade --> TransactionPublisher
+BankingFacade --> FraudMonitor
+FraudMonitor --> Notifier
+
+@enduml

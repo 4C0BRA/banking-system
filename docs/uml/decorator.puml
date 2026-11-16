@@ -1,0 +1,28 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam dpi 180
+left to right direction
+
+interface Notifier {
+  +send(message)
+}
+class AppNotifier
+abstract class NotifierDecorator {
+  -wrapped: Notifier
+  +send(message)
+}
+class EmailNotifier
+class SmsNotifier
+Notifier <|.. AppNotifier
+Notifier <|.. NotifierDecorator
+NotifierDecorator o-- Notifier : wraps
+NotifierDecorator <|-- EmailNotifier
+NotifierDecorator <|-- SmsNotifier
+
+@enduml

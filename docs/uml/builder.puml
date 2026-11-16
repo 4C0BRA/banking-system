@@ -1,0 +1,38 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam dpi 180
+left to right direction
+
+class LoanAgreementBuilder {
+  +borrower(name): LoanAgreementBuilder
+  +amount(amount): LoanAgreementBuilder
+  +annualRate(rate): LoanAgreementBuilder
+  +months(months): LoanAgreementBuilder
+  +purpose(purpose): LoanAgreementBuilder
+  +guarantor(guarantor): LoanAgreementBuilder
+  +build(): LoanAgreement
+}
+class LoanAgreementDirector {
+  +createPersonalLoan(...): LoanAgreement
+}
+class LoanAgreement {
+  -borrower: String
+  -amount: BigDecimal
+  -annualRate: BigDecimal
+  -months: int
+  -interest: BigDecimal
+  -purpose: String
+  -guarantor: String
+  +getTotal(): BigDecimal
+}
+LoanAgreementDirector ..> LoanAgreementBuilder
+LoanAgreementBuilder ..> LoanAgreement : creates
+LoanAgreementBuilder ..> InterestCalculator
+
+@enduml

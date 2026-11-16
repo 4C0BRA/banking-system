@@ -1,0 +1,22 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 16
+skinparam dpi 180
+participant FraudMonitor as Monitor
+participant SmsNotifier as SMS
+participant EmailNotifier as Email
+participant AppNotifier as App
+Monitor -> SMS: send(alert)
+SMS -> Email: send(alert)
+Email -> App: send(alert)
+App -> App: append APP delivery
+App --> Email
+Email -> Email: append EMAIL delivery
+Email --> SMS
+SMS -> SMS: append SMS delivery
+SMS --> Monitor
+@enduml
