@@ -1,0 +1,29 @@
+# Java compiler and build output
+*.class
+out/
+build/
+target/
+.gradle/
+
+# Local agent/tool runtime and rendered scratch files
+.gstack/
+tmp/
+
+# IntelliJ IDEA project-local files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Other editors
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*~
